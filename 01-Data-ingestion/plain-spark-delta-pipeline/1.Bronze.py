@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %run ../../_resources/00-setup $reset_all_data=true $db_prefix=retail
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## ![](https://pages.databricks.com/rs/094-YMS-629/images/delta-lake-tiny-logo.png) 1/ Explore the dataset
 # MAGIC
