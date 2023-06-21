@@ -21,6 +21,8 @@ cloud_storage_path = dbutils.widgets.get("cloud_storage_path")
 
 # COMMAND ----------
 
+from pyspark.sql.functions import *
+
 (spark.readStream 
         .table("churn_users_bronze")
         .withColumnRenamed("id", "user_id")

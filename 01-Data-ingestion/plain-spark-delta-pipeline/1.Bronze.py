@@ -1,5 +1,11 @@
 # Databricks notebook source
-# MAGIC %run ../../_resources/00-setup $reset_all_data=true $db_prefix=retail
+# MAGIC %sql
+# MAGIC use catalog ${catalog};
+# MAGIC use schema ${schema};
+
+# COMMAND ----------
+
+cloud_storage_path = dbutils.widgets.get("cloud_storage_path")
 
 # COMMAND ----------
 
@@ -10,17 +16,7 @@
 
 # COMMAND ----------
 
-# MAGIC %fs ls /demos/retail/churn/users
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC use catalog ${catalog};
-# MAGIC use schema ${schema};
-
-# COMMAND ----------
-
-cloud_storage_path = dbutils.widgets.get("cloud_storage_path")
+dbutils.fs.ls(f"{cloud_storage_path}/users")
 
 # COMMAND ----------
 
@@ -76,9 +72,9 @@ def ingest_folder(folder, data_format, table):
                     .trigger(once = True) #Remove for real time streaming
                     .table(table)) #Table will be created if we haven't specified the schema first
   
-ingest_folder('/demos/retail/churn/orders', 'json', 'churn_orders_bronze')
-ingest_folder('/demos/retail/churn/events', 'csv', 'churn_app_events')
-ingest_folder('/demos/retail/churn/users', 'json',  'churn_users_bronze').awaitTermination()
+ingest_folder(f'{cloud_storage_path}/orders', 'json', 'churn_orders_bronze')
+ingest_folder(f'{cloud_storage_path}/events', 'csv', 'churn_app_events')
+ingest_folder(f'{cloud_storage_path}/users', 'json',  'churn_users_bronze').awaitTermination()
 
 # COMMAND ----------
 

@@ -1,14 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # Data initialization notebook. 
-# MAGIC Do not run outside of the main notebook. This will automatically be called based on the reste_all widget value to setup the data required for the demo.
-
-# COMMAND ----------
-
-# MAGIC %pip install Faker
-
-# COMMAND ----------
-
 #dbutils.widgets.text("raw_data_location", "/demos/retail/churn/", "Raw data location (stating dir)")
 dbutils.widgets.dropdown("reset_all_data", "false", ["true", "false"], "Reset all data")
 reset_all_data = dbutils.widgets.get("reset_all_data") == "true"
@@ -22,7 +12,7 @@ def cleanup_folder(path):
 
 # COMMAND ----------
 
-folder = "/demos/retail/churn"
+folder = "s3a://databricks-dongwook/demos/retail/churn"
 if reset_all_data:
   print("resetting all data...")
   if folder.count('/') > 2:
@@ -34,7 +24,6 @@ try:
   dbutils.fs.ls(folder+"/orders")
   dbutils.fs.ls(folder+"/users")
   dbutils.fs.ls(folder+"/events")
-  generate_data = True
   data_exists = True
   print("data already exists")
 except:
@@ -45,11 +34,6 @@ if data_exists:
 
 # COMMAND ----------
 
-24*500
-
-# COMMAND ----------
-
-# DBTITLE 1,users data
 from pyspark.sql import functions as F
 from faker import Faker
 from collections import OrderedDict 
@@ -128,7 +112,6 @@ print(f"Generated {len(order_user_ids)} orders and  {len(action_user_ids)} actio
 
 # COMMAND ----------
 
-# DBTITLE 1,order data
 orders = spark.createDataFrame([(i,) for i in order_user_ids], ['user_id'])
 orders = orders.withColumn("id", fake_id())
 orders = orders.withColumn("transaction_date", fake_date())
@@ -141,7 +124,6 @@ cleanup_folder(folder+"/orders")
 
 # COMMAND ----------
 
-# DBTITLE 1,website actions
 #Website interaction
 import re
 
@@ -167,7 +149,6 @@ cleanup_folder(folder+"/events")
 
 # COMMAND ----------
 
-# DBTITLE 1,Compute churn and save users
 #Let's generate the Churn information. We'll fake it based on the existing data & let our ML model learn it
 from pyspark.sql.functions import col
 import pyspark.sql.functions as F
