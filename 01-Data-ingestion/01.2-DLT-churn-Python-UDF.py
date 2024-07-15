@@ -15,13 +15,12 @@
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC import mlflow
-# MAGIC #                                                                              Stage/version  
-# MAGIC #                                                                 Model name         |        
-# MAGIC #                                                                     |              |        
-# MAGIC predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dongwook_demos_customer_churn/Production")
-# MAGIC spark.udf.register("predict_churn", predict_churn_udf)
+import mlflow
+#                                                                              Stage/version  
+#                                                                 Model name         |        
+#                                                                     |              |        
+predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dongwook_demos_customer_churn/Production")
+spark.udf.register("predict_churn", predict_churn_udf)
 
 # COMMAND ----------
 
